@@ -9,10 +9,10 @@
 #include <avr/io.h>
 #include <math.h>
 
-float Ts = 0.000216; //testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
-float t = 0;
+float Ts = 0.000300; //testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
+float t = 0;    // NÃO TENHO IDEIA DO QUE ESTÁ ACONTECENDO
 float pi = 3.14159;
-int fp = 200;
+int fp = 1000;
 float Tp=0;
 float c=0;
 int		adsignal = 0;
