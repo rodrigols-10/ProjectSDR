@@ -9,11 +9,10 @@
 #include <avr/io.h>
 #include <math.h>
 
-float Ts = 0.000300; //testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
+float Ts = 0.00168; //testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
 float t = 0;    // NÃO TENHO IDEIA DO QUE ESTÁ ACONTECENDO
 float pi = 3.14159;
-int fp = 1000;
-float Tp=0;
+int fp = 200;
 float c=0;
 int		adsignal = 0;
 uint8_t	input=0;
@@ -22,7 +21,6 @@ uint8_t offset = 127; //2.5V
 
 int main(void)
 {
-	Tp = 1/fp;
 	DDRD = 0b11111111;
 	DDRB = 0b11111111;
 
@@ -36,17 +34,28 @@ int main(void)
     while(1)
     {
 		ADCSRA |= 1<<ADSC;    //Começa a conversão
-        adsignal = ADC; // Sinal recebido pelo conversor AD do ATmega328P (Está em auto-trigger, ou seja, está constantemente convertendo e jogando o resultado em ADC)
+        
+		adsignal = ADC; // Sinal recebido pelo conversor AD do ATmega328P (Está em auto-trigger, ou seja, está constantemente convertendo e jogando o resultado em ADC)
         input = adsignal / 4;	   //de 10 bits para 8 bits.
 		c = fp * t;
-		output = (input*0.9 - offset) * cos(2*pi*c) + offset;
+				
+		// output = (input - offset) * cos(2*pi*c) + offset;
+		
+		output = ((input/2) * cos(2*pi*fp*t)) + offset; // ESSE AQUI!!! AM	
+		
+		//output = ((offset) * cos(2*pi*fp*t)) + offset; 
+		
+		//output = offset* cos(2*pi*fp*t) + offset ; Somente a portadora na saída
+		
 		
 		PORTD = output;
 		
 		t += Ts;
 		if(c >= 1) t = 0; //Quando a portadora completar 1 período, reiniciamos o t, para não haver contagem infinita.
-		
+	
 		while(!(ADCSRA & 0b00010000)); //Espera o fim da conversão (Flag ADIF)
 		ADCSRA &= 0b11101111;
+		
+		
     }
 }
