@@ -15,18 +15,21 @@
 
 float Ts = 0.00168;			//testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
 float t = 0;
-int fp = 100;
+int fp = 50;
 float pi = 3.14159;
 float c=0;
 uint8_t	input=0;			// Valor do sinal transformado em 8 bits
 uint8_t	output = 0;			//Sinal de saida que sera usado no conversor D/A
 uint8_t offset = 127;		//Offset em 2.5V
+uint8_t Ap = 127;			//Amplitude da portadora em 2.5V
 
 //VARIAVEIS DE AJUSTES
 uint16_t adc_value = 0;
 int AM=0, FM=0, ASK=0, FSK=0;
 
 //LISTA DE FUNCOES
+void modulacao();
+void portadora();
 void adc_initiate();
 uint16_t freq_limit (uint16_t adc_value);
 void mod_select (uint16_t adc_value);
@@ -46,7 +49,8 @@ int main(void)
 	adc_initiate();		
 	sei();			// HABILITA INTERRUPCAO GLOBAL
 
-	ASK=1;
+	//VALORES DEFAULT
+	AM=1;
 
     while(1)
     {
@@ -81,7 +85,12 @@ int main(void)
 		//       MODULAÇÃO FSK
 		// -----------------------------
 		
-		if(FSK == 1);
+		if(FSK == 1){
+			if(input < 10) output = Ap * cos(2*pi*fp*t) + offset; //Significa que a entrada está em zero. (caso o valor de zero fique com ruído)
+			else {
+			output = Ap * cos(4*pi*fp*t) + offset; //Dobra a frequência da portadora
+			}
+		}
 		
 		//SOMENTE TESTES DA PORTADORA
 		//output = offset* cos(2*pi*fp*t) + offset ; Somente a portadora na saída
@@ -89,17 +98,43 @@ int main(void)
 		// -----------------------------
 		//       SAIDA
 		// -----------------------------
-		
 		PORTD = output;
 		
 		t += Ts;
 		if(c >= 1) t = 0; //Quando a portadora completar 1 período, reiniciamos o t, para não haver contagem infinita.
 	
-		//while(!(ADCSRA & 0b00010000)); //Espera o fim da conversão (Flag ADIF)
-		//ADCSRA &= 0b11101111;
-		
+		// -----------------------------
+		//       BOTAO M
+		// -----------------------------		
+		if(PINC & 0b00000100){	// BOTAO M EM PC2
+			PORTB = 0b11111111;
+			//cli();
+			//ADMUX = 0x41;
+			//sei();
+			while (1) //Sai se pressionar o botao P
+			{
+				modulacao();
+			}
+			while (!(PINC & 0b00010000)) //Sai se pressionar o botao R
+			{
+				portadora();
+			}
+		}
 		
     }
+}
+
+void modulacao()
+{
+	//<<<< ou aqui >>>>
+	output = input;
+	PORTD = output;
+	//<<<<<<< codigo do display aqui >>>>>>>
+}
+
+void portadora()
+{
+	
 }
 
 void adc_initiate(){
@@ -124,7 +159,7 @@ void adc_initiate(){
 	*/	
 	ADMUX = 0x40;
 	
-	DIDR0 = 0b00111110;		// HABILITA PINO PC0 COMO ENTRADA DO ADC0
+	DIDR0 = 0b00111100;		// HABILITA PINO PC0 COMO ENTRADA DO ADC0
 }
 
 //Funcao que retorna o valor do potenciometro com as limitacoes [100 <= valor <= 999]
