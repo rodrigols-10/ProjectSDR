@@ -5,13 +5,17 @@
  *  Author: rodrigo
  */ 
 
-#define F_CPU 16000000UL	//freq de trabalho da CPU
+//#define F_CPU 16000000UL	//freq de trabalho da CPU
 
-#include <util/delay.h>
+//#include <util/delay.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <xc.h>
 #include <math.h>
+
+//typedef int bool;
+//#define true 1
+//#define false 0
 
 float Ts = 0.00168;			//testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
 float t = 0;
@@ -26,6 +30,8 @@ uint8_t Ap = 127;			//Amplitude da portadora em 2.5V
 //VARIAVEIS DE AJUSTES
 uint16_t adc_value = 0;
 int AM=0, FM=0, ASK=0, FSK=0;
+
+ //bool button;
 
 //LISTA DE FUNCOES
 void modulacao();
@@ -44,6 +50,8 @@ int main(void)
 	DDRB = 0b11111111;
 
 	DDRC = 0b00000000;
+	PORTC = 0b00000000;
+	PORTB = 0b00000000;
 	
 	cli();			//DESABILITA INTERRUPCAO GLOBAL -- Necessario ao iniciar, pois força o bit correspondente para zero.
 	adc_initiate();		
@@ -106,19 +114,13 @@ int main(void)
 		// -----------------------------
 		//       BOTAO M
 		// -----------------------------		
-		if(PINC & 0b00000100){	// BOTAO M EM PC2
-			PORTB = 0b11111111;
-			//cli();
-			//ADMUX = 0x41;
-			//sei();
-			while (1) //Sai se pressionar o botao P
+		//button = ;
+		if(PINC & (1<<PINC2)){
+			while (!(PINC & (1<<PINC3)))
 			{
 				modulacao();
 			}
-			while (!(PINC & 0b00010000)) //Sai se pressionar o botao R
-			{
-				portadora();
-			}
+			ADMUX &= 0xFE;
 		}
 		
     }
@@ -127,6 +129,8 @@ int main(void)
 void modulacao()
 {
 	//<<<< ou aqui >>>>
+	ADMUX |= 0x01;
+	input = adc_value / 4;	   //de 10 bits para 8 bits.
 	output = input;
 	PORTD = output;
 	//<<<<<<< codigo do display aqui >>>>>>>
@@ -159,7 +163,7 @@ void adc_initiate(){
 	*/	
 	ADMUX = 0x40;
 	
-	DIDR0 = 0b00111100;		// HABILITA PINO PC0 COMO ENTRADA DO ADC0
+	//DIDR0 = 0b00111100;		// HABILITA PINO PC0 COMO ENTRADA DO ADC0
 }
 
 //Funcao que retorna o valor do potenciometro com as limitacoes [100 <= valor <= 999]
