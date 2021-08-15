@@ -13,10 +13,6 @@
 #include <xc.h>
 #include <math.h>
 
-//typedef int bool;
-//#define true 1
-//#define false 0
-
 float Ts = 0.00168;			//testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
 float t = 0;
 int fp = 100;
@@ -27,17 +23,14 @@ uint8_t	output = 0;			//Sinal de saida que sera usado no conversor D/A
 uint8_t offset = 127;		//Offset em 2.5V
 uint8_t Ap = 127;			//Amplitude da portadora em 2.5V
 uint8_t new_mgs = 0;		//Mensagem
-char mgs_bin[8] = {'0','0','0','0','0','0','0','0'};
+char mgs_bin[8] = {'0','0','0','0','0','0','0','0'}; //Mensagem Binaria
 
 //VARIAVEIS DE AJUSTES
 uint16_t adc_value = 0;
-int mod=1; //Inicia em AM;
+int mod=1; //Inicia em AM
 int un = 0;
 int de = 0;
 int ce = 0;
-
-
-//bool button;
 
 //LISTA DE FUNCOES
 void modulacao();
@@ -133,9 +126,24 @@ int main(void)
 		PORTD = output;
 		t += Ts;
 		if(c >= 1) t = 0; //Quando a portadora completar 1 período, reiniciamos o t, para não haver contagem infinita.
-	
+		
+		if(mod<=2){ //mod=1 (AM) ou mod=2 (FM)
 		new_mgs = input*(50/255);
 		separate_digit(new_mgs);
+		
+		lcd_adress(0XC5);
+		lcd_number(de);					//5
+		
+		lcd_adress(0XC6);
+		lcd_number(0x43);				//.
+		
+		lcd_adress(0XC7);
+		lcd_number(un);					//0
+		
+		lcd_adress(0XC8);
+		lcd_data(0x43);					//V
+		//mostrar null no resto da menssagem.
+		}
 		
 		
 		// -----------------------------
