@@ -56,6 +56,7 @@ void lcd_on_cursor();
 void lcd_port(uint16_t n);
 void lcd_number(int n);
 void separate_digit(uint16_t n);
+void lcd_calc();
 
 ISR(ADC_vect){
 	adc_value = ADC;
@@ -150,6 +151,7 @@ int main(void)
 			{
 				portadora();
 			}
+			lcd_calc();
 			ADMUX &= 0xFE;	//Muda o canal do ADC para o canal 0
 		}
 		
@@ -604,6 +606,32 @@ void lcd_number(int n){
 		break;
 	}
 }
+
+void lcd_calc(){
+	lcd_adress(0XC5);
+	lcd_data(0x43);					//C
+	lcd_adress(0XC6);
+	lcd_data(0x41);					//A
+	lcd_adress(0XC7);
+	lcd_data(0x4C);					//L
+	lcd_adress(0XC8);
+	lcd_data(0x43);					//C
+	lcd_adress(0XC9);
+	lcd_data(0x55);					//U
+	lcd_adress(0XCA);
+	lcd_data(0x4C);					//L
+	lcd_adress(0XCB);
+	lcd_data(0x41);					//A
+	lcd_adress(0XCC);
+	lcd_data(0x4E);					//N
+	lcd_adress(0XCD);
+	lcd_data(0x44);					//D
+	lcd_adress(0XCE);
+	lcd_data(0x4F);					//O
+	lcd_adress(0XCF);
+	lcd_data(0x01);					//null
+}
+
 void separate_digit(uint16_t n){
 
 int number = n;
