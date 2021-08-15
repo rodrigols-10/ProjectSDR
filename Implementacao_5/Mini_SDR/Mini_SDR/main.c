@@ -567,11 +567,11 @@ void lcd_port(uint16_t n){
 	lcd_data(0x50);					//P
 	lcd_adress(0x8A);
 	lcd_data(0x3A);					//:
-	lcd_adress(0x8B);
 	lcd_adress(0x8E);
 	lcd_data(0x48);					//H
 	lcd_adress(0x8F);
 	lcd_data(0x7A);					//z
+	lcd_adress(0x8B);
 	lcd_number(ce);
 	lcd_adress(0x8C);
 	lcd_number(de);

@@ -259,7 +259,7 @@ Disassembly of section .text:
 Disassembly of section .text:
 
 0000104a <__bad_interrupt>:
-    104a:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+    104a:	0c 94 00 00 	jmp	0	; 0x0 <__TEXT_REGION_ORIGIN__>
 
 Disassembly of section .text.__vector_21:
 
@@ -934,7 +934,7 @@ Disassembly of section .text.mod_select:
  b1a:	90 e0       	ldi	r25, 0x00	; 0
  b1c:	90 93 11 01 	sts	0x0111, r25	; 0x800111 <mod+0x1>
  b20:	80 93 10 01 	sts	0x0110, r24	; 0x800110 <mod>
- b24:	0e 94 8c 00 	call	0x118	; 0x118 <_etext>
+ b24:	0e 94 8c 00 	call	0x118	; 0x118 <__data_load_end>
  b28:	08 95       	ret
  b2a:	9c 01       	movw	r18, r24
  b2c:	3a 95       	dec	r19
@@ -945,7 +945,7 @@ Disassembly of section .text.mod_select:
  b36:	90 e0       	ldi	r25, 0x00	; 0
  b38:	90 93 11 01 	sts	0x0111, r25	; 0x800111 <mod+0x1>
  b3c:	80 93 10 01 	sts	0x0110, r24	; 0x800110 <mod>
- b40:	0e 94 8c 00 	call	0x118	; 0x118 <_etext>
+ b40:	0e 94 8c 00 	call	0x118	; 0x118 <__data_load_end>
  b44:	08 95       	ret
  b46:	9c 01       	movw	r18, r24
  b48:	2f 5f       	subi	r18, 0xFF	; 255
@@ -957,7 +957,7 @@ Disassembly of section .text.mod_select:
  b54:	90 e0       	ldi	r25, 0x00	; 0
  b56:	90 93 11 01 	sts	0x0111, r25	; 0x800111 <mod+0x1>
  b5a:	80 93 10 01 	sts	0x0110, r24	; 0x800110 <mod>
- b5e:	0e 94 8c 00 	call	0x118	; 0x118 <_etext>
+ b5e:	0e 94 8c 00 	call	0x118	; 0x118 <__data_load_end>
  b62:	08 95       	ret
  b64:	8e 5f       	subi	r24, 0xFE	; 254
  b66:	92 40       	sbci	r25, 0x02	; 2
@@ -968,7 +968,7 @@ Disassembly of section .text.mod_select:
  b70:	90 e0       	ldi	r25, 0x00	; 0
  b72:	90 93 11 01 	sts	0x0111, r25	; 0x800111 <mod+0x1>
  b76:	80 93 10 01 	sts	0x0110, r24	; 0x800110 <mod>
- b7a:	0e 94 8c 00 	call	0x118	; 0x118 <_etext>
+ b7a:	0e 94 8c 00 	call	0x118	; 0x118 <__data_load_end>
  b7e:	08 95       	ret
 
 Disassembly of section .text.modulacao:
@@ -1068,16 +1068,16 @@ Disassembly of section .text.lcd_port:
  a42:	0e 94 7e 06 	call	0xcfc	; 0xcfc <lcd_adress>
  a46:	8a e3       	ldi	r24, 0x3A	; 58
  a48:	0e 94 50 06 	call	0xca0	; 0xca0 <lcd_data>
- a4c:	8b e8       	ldi	r24, 0x8B	; 139
+ a4c:	8e e8       	ldi	r24, 0x8E	; 142
  a4e:	0e 94 7e 06 	call	0xcfc	; 0xcfc <lcd_adress>
- a52:	8e e8       	ldi	r24, 0x8E	; 142
- a54:	0e 94 7e 06 	call	0xcfc	; 0xcfc <lcd_adress>
- a58:	88 e4       	ldi	r24, 0x48	; 72
- a5a:	0e 94 50 06 	call	0xca0	; 0xca0 <lcd_data>
- a5e:	8f e8       	ldi	r24, 0x8F	; 143
- a60:	0e 94 7e 06 	call	0xcfc	; 0xcfc <lcd_adress>
- a64:	8a e7       	ldi	r24, 0x7A	; 122
- a66:	0e 94 50 06 	call	0xca0	; 0xca0 <lcd_data>
+ a52:	88 e4       	ldi	r24, 0x48	; 72
+ a54:	0e 94 50 06 	call	0xca0	; 0xca0 <lcd_data>
+ a58:	8f e8       	ldi	r24, 0x8F	; 143
+ a5a:	0e 94 7e 06 	call	0xcfc	; 0xcfc <lcd_adress>
+ a5e:	8a e7       	ldi	r24, 0x7A	; 122
+ a60:	0e 94 50 06 	call	0xca0	; 0xca0 <lcd_data>
+ a64:	8b e8       	ldi	r24, 0x8B	; 139
+ a66:	0e 94 7e 06 	call	0xcfc	; 0xcfc <lcd_adress>
  a6a:	c7 01       	movw	r24, r14
  a6c:	0e 94 f1 05 	call	0xbe2	; 0xbe2 <lcd_number>
  a70:	8c e8       	ldi	r24, 0x8C	; 140
@@ -1144,7 +1144,7 @@ void delay_1(){
  560:	0e 94 c0 05 	call	0xb80	; 0xb80 <lcd_default>
  564:	81 e0       	ldi	r24, 0x01	; 1
  566:	90 e0       	ldi	r25, 0x00	; 0
- 568:	0e 94 8c 00 	call	0x118	; 0x118 <_etext>
+ 568:	0e 94 8c 00 	call	0x118	; 0x118 <__data_load_end>
  56c:	00 91 12 01 	lds	r16, 0x0112	; 0x800112 <adc_value>
  570:	10 91 13 01 	lds	r17, 0x0113	; 0x800113 <adc_value+0x1>
  574:	16 95       	lsr	r17
@@ -1169,10 +1169,10 @@ void delay_1(){
  5aa:	a7 01       	movw	r20, r14
  5ac:	96 01       	movw	r18, r12
  5ae:	0e 94 1e 08 	call	0x103c	; 0x103c <__mulsf3>
- 5b2:	60 93 00 01 	sts	0x0100, r22	; 0x800100 <_edata>
- 5b6:	70 93 01 01 	sts	0x0101, r23	; 0x800101 <_edata+0x1>
- 5ba:	80 93 02 01 	sts	0x0102, r24	; 0x800102 <_edata+0x2>
- 5be:	90 93 03 01 	sts	0x0103, r25	; 0x800103 <_edata+0x3>
+ 5b2:	60 93 00 01 	sts	0x0100, r22	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 5b6:	70 93 01 01 	sts	0x0101, r23	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 5ba:	80 93 02 01 	sts	0x0102, r24	; 0x800102 <__DATA_REGION_ORIGIN__+0x2>
+ 5be:	90 93 03 01 	sts	0x0103, r25	; 0x800103 <__DATA_REGION_ORIGIN__+0x3>
  5c2:	80 91 10 01 	lds	r24, 0x0110	; 0x800110 <mod>
  5c6:	90 91 11 01 	lds	r25, 0x0111	; 0x800111 <mod+0x1>
  5ca:	9b 83       	std	Y+3, r25	; 0x03
@@ -1381,10 +1381,10 @@ void delay_1(){
  7f6:	70 93 09 01 	sts	0x0109, r23	; 0x800109 <t+0x1>
  7fa:	80 93 0a 01 	sts	0x010A, r24	; 0x80010a <t+0x2>
  7fe:	90 93 0b 01 	sts	0x010B, r25	; 0x80010b <t+0x3>
- 802:	60 91 00 01 	lds	r22, 0x0100	; 0x800100 <_edata>
- 806:	70 91 01 01 	lds	r23, 0x0101	; 0x800101 <_edata+0x1>
- 80a:	80 91 02 01 	lds	r24, 0x0102	; 0x800102 <_edata+0x2>
- 80e:	90 91 03 01 	lds	r25, 0x0103	; 0x800103 <_edata+0x3>
+ 802:	60 91 00 01 	lds	r22, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 806:	70 91 01 01 	lds	r23, 0x0101	; 0x800101 <__DATA_REGION_ORIGIN__+0x1>
+ 80a:	80 91 02 01 	lds	r24, 0x0102	; 0x800102 <__DATA_REGION_ORIGIN__+0x2>
+ 80e:	90 91 03 01 	lds	r25, 0x0103	; 0x800103 <__DATA_REGION_ORIGIN__+0x3>
  812:	20 e0       	ldi	r18, 0x00	; 0
  814:	30 e0       	ldi	r19, 0x00	; 0
  816:	40 e8       	ldi	r20, 0x80	; 128
