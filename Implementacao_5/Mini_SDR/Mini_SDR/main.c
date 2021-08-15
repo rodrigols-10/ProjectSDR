@@ -547,19 +547,19 @@ void lcd_port(uint16_t n){
 	int number = n;
 	
 	while (1){
-		number = number-100;
-		ce++;
 		if (number<100){
 			break;
 		}
+		number = number-100;
+		ce++;		
 	}
 	
 	while (1){
-		number = number-10;
-		de++;
 		if (number<10){
 			break;
 		}
+		number = number-10;
+		de++;
 	}
 	un = number;
 	
