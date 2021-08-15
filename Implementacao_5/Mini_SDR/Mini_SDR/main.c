@@ -26,10 +26,14 @@ uint8_t	input=0;			// Valor do sinal transformado em 8 bits
 uint8_t	output = 0;			//Sinal de saida que sera usado no conversor D/A
 uint8_t offset = 127;		//Offset em 2.5V
 uint8_t Ap = 127;			//Amplitude da portadora em 2.5V
+uint8_t new_mgs = 0;		//Mensagem
 
 //VARIAVEIS DE AJUSTES
 uint16_t adc_value = 0;
 int mod=1; //Inicia em AM;
+int un = 0;
+int de = 0;
+int ce = 0;
 
  //bool button;
 
@@ -51,6 +55,7 @@ void lcd_off_cursor();
 void lcd_on_cursor();
 void lcd_port(uint16_t n);
 void lcd_number(int n);
+void separate_digit(uint16_t n);
 
 ISR(ADC_vect){
 	adc_value = ADC;
@@ -126,6 +131,9 @@ int main(void)
 		t += Ts;
 		if(c >= 1) t = 0; //Quando a portadora completar 1 período, reiniciamos o t, para não haver contagem infinita.
 	
+		//new_mgs = input*(50/255);
+		
+		
 		// -----------------------------
 		//       BOTAO M
 		// -----------------------------		
@@ -541,27 +549,10 @@ void lcd_mod(int mod){
 }
 
 void lcd_port(uint16_t n){
-	int un = 0;
-	int de = 0;
-	int ce = 0;
-	int number = n;
-	
-	while (1){
-		if (number<100){
-			break;
-		}
-		number = number-100;
-		ce++;		
-	}
-	
-	while (1){
-		if (number<10){
-			break;
-		}
-		number = number-10;
-		de++;
-	}
-	un = number;
+	un = 0;
+	de = 0;
+	ce = 0;
+	separate_digit(n);
 	
 	lcd_adress(0x89);
 	lcd_data(0x50);					//P
@@ -612,4 +603,25 @@ void lcd_number(int n){
 		lcd_data(0x39);
 		break;
 	}
+}
+void separate_digit(uint16_t n){
+
+int number = n;
+
+while (1){
+	if (number<100){
+		break;
+	}
+	number = number-100;
+	ce++;
+}
+
+while (1){
+	if (number<10){
+		break;
+	}
+	number = number-10;
+	de++;
+}
+un = number;
 }
