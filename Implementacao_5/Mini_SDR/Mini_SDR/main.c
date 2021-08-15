@@ -19,7 +19,7 @@
 
 float Ts = 0.00168;			//testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
 float t = 0;
-int fp = 50;
+int fp = 100;
 float pi = 3.14159;
 float c=0;
 uint8_t	input=0;			// Valor do sinal transformado em 8 bits
@@ -49,6 +49,8 @@ void lcd_default();
 void lcd_mod(int mod);
 void lcd_off_cursor();
 void lcd_on_cursor();
+void lcd_port(uint16_t n);
+void lcd_number(int n);
 
 ISR(ADC_vect){
 	adc_value = ADC;
@@ -71,6 +73,7 @@ int main(void)
 	lcd_off_cursor();
 	//lcd_on_cursor();
 	lcd_default();
+	lcd_mod(1);
 	
 
     while(1)
@@ -126,20 +129,20 @@ int main(void)
 		// -----------------------------
 		//       BOTAO M
 		// -----------------------------		
-		//button = ;
+		
 		if(PINC & (1<<PINC2)){
 //		<<< pre-configuracao de modulacao aqui >>>
 			ADMUX |= 0x01;
-			while (!(PINC & (1<<PINC3)))
+			while (!(PINC & (1<<PINC3))) //Botão P
 			{
 				modulacao();
 			}
 //		<<< pre-configuracao de portadora aqui >>>
-			while (!(PINC & (1<<PINC4)))
+			while (!(PINC & (1<<PINC4))) //Botão R
 			{
 				portadora();
 			}
-			ADMUX &= 0xFE;
+			ADMUX &= 0xFE;	//Muda o canal do ADC para o canal 0
 		}
 		
     }
@@ -152,7 +155,8 @@ void modulacao()
 
 void portadora()
 {
-	
+	fp = freq_limit (adc_value);
+	lcd_port(fp);
 }
 
 void adc_initiate(){
@@ -532,6 +536,72 @@ void lcd_mod(int mod){
 		lcd_data(0xB0);					//-
 		lcd_adress(0XCF);
 		lcd_data(0xB0);					//-
+		break;
+	}
+}
+
+void lcd_port(uint16_t n){
+	int un = 0;
+	int de = 0;
+	int ce = 0;
+	int number = n;
+	
+	while (1){
+		number = number-100;
+		ce++;
+		if (number<100){
+			break;
+		}
+	}
+	
+	while (1){
+		number = number-10;
+		de++;
+		if (number<10){
+			break;
+		}
+	}
+	un = number;
+	
+	lcd_adress(0x8B);
+	lcd_number(ce);
+	lcd_adress(0x8C);
+	lcd_number(de);
+	lcd_adress(0x8D);
+	lcd_number(un);
+}
+
+void lcd_number(int n){
+	switch(n){
+		case 0:
+		lcd_data(0x30);
+		break;
+		case 1:
+		lcd_data(0x31);
+		break;
+		case 2:
+		lcd_data(0x32);
+		break;
+		case 3:
+		lcd_data(0x33);
+		break;
+		case 4:
+		lcd_data(0x34);
+		break;
+		case 5:
+		lcd_data(0x35);
+		break;
+		case 6:
+		lcd_data(0x36);
+		break;
+		case 7:
+		lcd_data(0x37);
+		break;
+		case 8:
+		lcd_data(0x38);
+		break;
+		case 9:
+		lcd_data(0x39);
 		break;
 	}
 }
