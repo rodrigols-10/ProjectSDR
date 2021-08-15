@@ -52,6 +52,7 @@ void lcd_port(uint16_t n);
 void lcd_number(int n);
 void separate_digit(uint16_t n);
 void lcd_calc();
+void lcd_R_analog();
 
 ISR(ADC_vect){
 	adc_value = ADC;
@@ -128,21 +129,10 @@ int main(void)
 		if(c >= 1) t = 0; //Quando a portadora completar 1 período, reiniciamos o t, para não haver contagem infinita.
 		
 		if(mod<=2){ //mod=1 (AM) ou mod=2 (FM)
-		new_mgs = input*(50/255);
-		separate_digit(new_mgs);
-		
-		lcd_adress(0XC5);
-		lcd_number(de);					//5
-		
-		lcd_adress(0XC6);
-		lcd_number(0x43);				//.
-		
-		lcd_adress(0XC7);
-		lcd_number(un);					//0
-		
-		lcd_adress(0XC8);
-		lcd_data(0x43);					//V
-		//mostrar null no resto da menssagem.
+		lcd_R_analog();
+		//new_mgs = input*(50/255);
+		//separate_digit(new_mgs);
+
 		}
 		
 		
@@ -637,6 +627,44 @@ void lcd_calc(){
 	lcd_data(0x44);					//D
 	lcd_adress(0XCE);
 	lcd_data(0x4F);					//O
+	lcd_adress(0XCF);
+	lcd_data(0x01);					//null
+}
+
+void lcd_R_analog(){
+	
+	separate_digit(adc_value);
+	
+	lcd_adress(0xC5);
+	lcd_number(ce);
+	
+	lcd_adress(0xC6);
+	lcd_number(de);
+	
+	lcd_adress(0xC7);
+	lcd_number(un);
+	
+	lcd_adress(0XC8);
+	lcd_data(0x01);					//null
+	
+	lcd_adress(0XC9);
+	lcd_data(0x01);					//null
+	
+	lcd_adress(0XCA);
+	lcd_data(0x01);					//null
+	
+	lcd_adress(0XCB);
+	lcd_data(0x01);					//null
+	
+	lcd_adress(0XCC);
+	lcd_data(0x01);					//null
+	
+	lcd_adress(0XCD);
+	lcd_data(0x01);					//null
+	
+	lcd_adress(0XCE);
+	lcd_data(0x01);					//null
+	
 	lcd_adress(0XCF);
 	lcd_data(0x01);					//null
 }
