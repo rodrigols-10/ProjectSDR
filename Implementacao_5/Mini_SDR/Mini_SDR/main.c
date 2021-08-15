@@ -107,7 +107,6 @@ int main(void)
 		//       SAIDA
 		// -----------------------------
 		PORTD = output;
-		
 		t += Ts;
 		if(c >= 1) t = 0; //Quando a portadora completar 1 período, reiniciamos o t, para não haver contagem infinita.
 	
