@@ -310,7 +310,7 @@ Disassembly of section .text:
 Disassembly of section .text:
 
 000018f8 <__bad_interrupt>:
-    18f8:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+    18f8:	0c 94 00 00 	jmp	0	; 0x0 <__TEXT_REGION_ORIGIN__>
 
 Disassembly of section .text.__vector_21:
 
@@ -398,8 +398,8 @@ void delay_1(){
  b8a:	96 01       	movw	r18, r12
  b8c:	60 e0       	ldi	r22, 0x00	; 0
  b8e:	70 e0       	ldi	r23, 0x00	; 0
- b90:	80 e0       	ldi	r24, 0x00	; 0
- b92:	90 e4       	ldi	r25, 0x40	; 64
+ b90:	80 e8       	ldi	r24, 0x80	; 128
+ b92:	9f e3       	ldi	r25, 0x3F	; 63
  b94:	0e 94 71 0c 	call	0x18e2	; 0x18e2 <__divsf3>
  b98:	0e 94 3a 0c 	call	0x1874	; 0x1874 <__fixsfsi>
  b9c:	70 93 1f 01 	sts	0x011F, r23	; 0x80011f <Fin+0x1>

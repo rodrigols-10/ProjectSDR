@@ -13,7 +13,7 @@
 #include <xc.h>
 #include <math.h>
 
-float Ts = 0.00170;			//	testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
+float Ts = 0.00167;			//	testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
 float t = 0;
 int fp = 100;
 float pi = 3.14159;
@@ -77,7 +77,7 @@ ISR(ADC_vect){
 			if (contou == 1)
 			{
 				if(Tin!=0){
-					Fin = 2/Tin;
+					Fin = 1/Tin;
 				} else {
 					Fin=0;
 				}
