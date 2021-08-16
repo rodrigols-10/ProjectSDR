@@ -126,7 +126,7 @@ int main(void)
 
 	DDRC = 0b00000000;
 	PORTC = 0b00000000;
-	PORTB = 0b00000000;
+	//PORTB = 0b00000000;
 	
 	cli();			//DESABILITA INTERRUPCAO GLOBAL -- Necessario ao iniciar, pois força o bit correspondente para zero.
 	adc_initiate();
@@ -169,7 +169,7 @@ int main(void)
 		//PORTB |=  0b10000000; //Liga LED RED
 	} else {									 //se verifica_freq = 1, modula.
 		//PORTB &=  0b01111111; //Desliga LED RED
-		PORTB |=  0b01000000; //Liga LED BLUE
+		//PORTB |=  0b01000000; //Liga LED BLUE
 		
 		// -----------------------------
 		//       MODULAÇÃO AM
