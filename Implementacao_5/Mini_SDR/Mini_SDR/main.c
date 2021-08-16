@@ -124,7 +124,7 @@ int main(void)
 	DDRD = 0b11111111;
 	DDRB = 0b11111111;
 
-	DDRC = 0b00000000;
+	DDRC = 0b10000000;
 	PORTC = 0b00000000;
 	//PORTB = 0b00000000;
 	
@@ -166,9 +166,10 @@ int main(void)
 		lcd_R_analog(Fin);
 		lcd_calc();
 		//PORTB &=  0b10111111; //Desliga LED BLUE
-		//PORTB |=  0b10000000; //Liga LED RED
+		
+		PORTC &=  0b01111111; //Desliga LED BLUE
 	} else {									 //se verifica_freq = 1, modula.
-		//PORTB &=  0b01111111; //Desliga LED RED
+		PORTC |=  0b10000000; //Liga LED BLUE
 		//PORTB |=  0b01000000; //Liga LED BLUE
 		
 		// -----------------------------
