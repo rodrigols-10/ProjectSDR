@@ -13,7 +13,7 @@
 #include <xc.h>
 #include <math.h>
 
-float Ts = 0.00170;			//testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
+float Ts = 0.00168;			//testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
 float t = 0;
 int fp = 100;
 float pi = 3.14159;
@@ -22,7 +22,7 @@ uint8_t	input=0;			// Valor do sinal transformado em 8 bits
 uint8_t	output = 0;			//Sinal de saida que sera usado no conversor D/A
 uint8_t offset = 127;		//Offset em 2.5V
 uint8_t Ap = 127;			//Amplitude da portadora em 2.5V
-uint8_t new_msg = 0;		//Mensagem
+uint8_t new_msg = 0;		//Mensagem analogica
 char msg_bin[8] = {'0','0','0','0','0','0','0','0'}; //Mensagem Binaria
 
 //VARIAVEIS DE AJUSTES
@@ -39,6 +39,7 @@ int contou=0;
 
 float Tin=0;
 int Fin=0;
+int verifica_freq=0;
 
 //LISTA DE FUNCOES
 void modulacao();
@@ -65,11 +66,11 @@ void lcd_R_digit(char n[8], int fb);
 
 ISR(ADC_vect){
 	adc_value = ADC;
-	//conta quantos Ts passaram pra um clock
+
 	if(mod<=2){ //Para modulações Analogicas. mod=1 (AM), mod=2 (FM)
 		if (adc_value <= 511)
 		{
-			Tin += Ts;
+			Tin += Ts;	//conta quantos Ts se passaram pra meio período de Tin
 			contou = 1;
 		} else {
 			//Verificando frequencia de entrada
@@ -128,7 +129,7 @@ int main(void)
 	PORTB = 0b00000000;
 	
 	cli();			//DESABILITA INTERRUPCAO GLOBAL -- Necessario ao iniciar, pois força o bit correspondente para zero.
-	adc_initiate();		
+	adc_initiate();
 	sei();			// HABILITA INTERRUPCAO GLOBAL
 	
 	lcd_init();								//Init LCD
@@ -143,6 +144,30 @@ int main(void)
         // O valor de adc_value esta sendo coletado 
         input = adc_value / 4;	   //de 10 bits para 8 bits.
 		c = fp * t;
+	
+	if (mod<=2) //modulação analógica
+	{
+		if (Fin<1 || Fin>10)
+		{
+			verifica_freq=0;
+		} else {
+			verifica_freq=1;
+		}
+	} else {	//modulação digital
+		if (Fin<8 || Fin>80)
+		{
+			verifica_freq=0;
+		} else {
+			verifica_freq=1;
+		}
+	}
+	if(!verifica_freq){							 //se verifica_freq = 0, não modula.
+		lcd_mod(mod);
+		PORTB &=  0b10111111; //Desliga LED BLUE
+		PORTB |=  0b10000000; //Liga LED RED
+	} else {									 //se verifica_freq = 1, modula.
+		PORTB &=  0b01111111; //Desliga LED RED
+		PORTB |=  0b01000000; //Liga LED BLUE
 		
 		// -----------------------------
 		//       MODULAÇÃO AM
@@ -199,7 +224,8 @@ int main(void)
 			lcd_R_digit(msg_bin,Fin);
 		}
 		
-		
+	}//Fim da verificação das frequências
+	
 		// -----------------------------
 		//       BOTOES E ESTADOS
 		// -----------------------------		
