@@ -22,8 +22,8 @@ uint8_t	input=0;			// Valor do sinal transformado em 8 bits
 uint8_t	output = 0;			//Sinal de saida que sera usado no conversor D/A
 uint8_t offset = 127;		//Offset em 2.5V
 uint8_t Ap = 127;			//Amplitude da portadora em 2.5V
-uint8_t new_mgs = 0;		//Mensagem
-char mgs_bin[8] = {'0','0','0','0','0','0','0','0'}; //Mensagem Binaria
+uint8_t new_msg = 0;		//Mensagem
+char msg_bin[8] = {'0','0','0','0','0','0','0','0'}; //Mensagem Binaria
 
 //VARIAVEIS DE AJUSTES
 uint16_t adc_value = 0;
@@ -31,6 +31,11 @@ int mod=1; //Inicia em AM
 int un = 0;
 int de = 0;
 int ce = 0;
+
+char VL = '0';
+char VH = '0';
+int cont_bit=0;
+int contou=0;
 
 //LISTA DE FUNCOES
 void modulacao();
@@ -56,6 +61,25 @@ void lcd_R_analog();
 
 ISR(ADC_vect){
 	adc_value = ADC;
+	
+	if(mod>=3){ //Para modulações Digitais. mod=3 (ASK), mod=4 (FSK)
+		if(!(PINC & (1<<PINC5))){ // Se o clock da entrada estiver em LOW
+			if (adc_value <= 10)	  // Sinal de entrada com valor muito baixo (usar 0 em circuito real poderia não funcionar com ruído)
+			{
+				VL = 0;
+			} else{
+				VL = 1;
+			}
+			contou=1;
+		} else {				// Se o clock da entrada estiver em HIGH
+			VH = VL;
+			if(contou==1){
+				msg_bin[cont_bit] = VH;
+				cont_bit++;
+				contou=0;	
+			}
+		}
+	}
 }
 
 int main(void)
@@ -70,7 +94,7 @@ int main(void)
 	cli();			//DESABILITA INTERRUPCAO GLOBAL -- Necessario ao iniciar, pois força o bit correspondente para zero.
 	adc_initiate();		
 	sei();			// HABILITA INTERRUPCAO GLOBAL
-
+	
 	lcd_init();								//Init LCD
 	lcd_off_cursor();
 	//lcd_on_cursor();
@@ -130,9 +154,8 @@ int main(void)
 		
 		if(mod<=2){ //mod=1 (AM) ou mod=2 (FM)
 		lcd_R_analog();
-		//new_mgs = input*(50/255);
-		//separate_digit(new_mgs);
-
+		//new_msg = input*(50/255);
+		//separate_digit(new_msg);
 		}
 		
 		
@@ -633,7 +656,7 @@ void lcd_calc(){
 
 void lcd_R_analog(){
 	
-	separate_digit(adc_value);
+	separate_digit(adc_value*0.9);
 	
 	lcd_adress(0xC5);
 	lcd_number(ce);
