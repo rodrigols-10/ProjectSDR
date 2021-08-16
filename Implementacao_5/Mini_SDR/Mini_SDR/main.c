@@ -159,6 +159,9 @@ int main(void)
 		//new_msg = input*(50/255);
 		//separate_digit(new_msg);
 		}
+		if(mod>=3){ //mod=3 (ASK) ou mod=4 (FSK)
+			lcd_R_digit(msg_bin);
+		}
 		
 		
 		// -----------------------------
