@@ -154,7 +154,7 @@ int main(void)
 		//       MODULAÇÃO FM
 		// -----------------------------
 		
-		if(mod == 2)	output =  Ap * cos(2*pi*t*(fp + (input/2))) + offset;
+		if(mod == 2)	output =  Ap * cos(2*pi*t*(fp + fp*(input/2)/255)) + offset;
 		
 		// -----------------------------
 		//       MODULAÇÃO ASK
@@ -192,7 +192,6 @@ int main(void)
 		//       DISPLAY
 		// -----------------------------
 		if(mod<=2){ //mod=1 (AM) ou mod=2 (FM)
-		new_msg = input*(50/255);
 		lcd_R_analog(Fin);
 
 		}
@@ -698,19 +697,19 @@ void lcd_calc(){
 
 void lcd_R_analog(int fin){
 	
-	separate_digit(new_msg);
+	separate_digit(adc_value*0.9);
 	
 	lcd_adress(0xC5);
-	lcd_number(de);
+	lcd_number(ce);
 	
 	lcd_adress(0xC6);
-	lcd_number('.');
+	lcd_number(de);
 	
 	lcd_adress(0xC7);
 	lcd_number(un);
 	
 	lcd_adress(0XC8);
-	lcd_data('v');					//null
+	lcd_data(0x01);					//null
 	
 	lcd_adress(0XC9);
 	lcd_data(0x01);					//null
