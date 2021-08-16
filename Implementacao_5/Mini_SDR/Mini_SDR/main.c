@@ -58,6 +58,7 @@ void lcd_number(int n);
 void separate_digit(uint16_t n);
 void lcd_calc();
 void lcd_R_analog();
+void lcd_R_digit(char n[8]);
 
 ISR(ADC_vect){
 	adc_value = ADC;
@@ -691,6 +692,51 @@ void lcd_R_analog(){
 	
 	lcd_adress(0XCF);
 	lcd_data(0x01);					//null
+}
+
+void lcd_R_digit(char n[8]){
+	/*char i0 = {0x4+n[0]};
+	char i1 = {0x4+n[1]};
+	char i2 = {0x4+n[2]};
+	char i3 = {0x4+n[3]};
+	char i4 = {0x4+n[4]};
+	char i5 = {0x4+n[5]};
+	char i6 = {0x4+n[6]};
+	char i7 = {0x4+n[7]};		
+	*/
+	lcd_adress(0XC5);
+	lcd_data(0x4+n[0]);					//-
+	
+	lcd_adress(0XC6);
+	lcd_data(0x4+n[1]);					//-
+	
+	lcd_adress(0XC7);
+	lcd_data(0x2E);					//.
+	
+	lcd_adress(0XC8);
+	lcd_data(0x4+n[2]);					//-
+	
+	lcd_adress(0XC9);
+	lcd_data(0x4+n[3]);					//-
+	
+	lcd_adress(0XCA);
+	lcd_data(0x2E);					//.
+	
+	lcd_adress(0XCB);
+	lcd_data(0x4+n[4]);					//-
+	
+	lcd_adress(0XCC);
+	lcd_data(0x4+n[5]);					//-
+	
+	lcd_adress(0XCD);
+	lcd_data(0x2E);					//.
+	
+	lcd_adress(0XCE);
+	lcd_data(0x4+n[6]);					//-
+	
+	lcd_adress(0XCF);
+	lcd_data(0x4+n[7]);					//-
+	
 }
 
 void separate_digit(uint16_t n){
