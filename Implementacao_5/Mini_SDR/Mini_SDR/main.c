@@ -122,7 +122,7 @@ ISR(ADC_vect){
 int main(void)
 {
 	DDRD = 0b11111111;
-	DDRB = 0b00111111;
+	DDRB = 0b11111111;
 
 	DDRC = 0b00000000;
 	PORTC = 0b00000000;
@@ -162,7 +162,8 @@ int main(void)
 		}
 	}
 	if(!verifica_freq){							 //se verifica_freq = 0, não modula.
-		lcd_mod(mod);
+		//lcd_mod(mod);
+		lcd_R_analog(Fin);
 		PORTB &=  0b10111111; //Desliga LED BLUE
 		PORTB |=  0b10000000; //Liga LED RED
 	} else {									 //se verifica_freq = 1, modula.
