@@ -109,7 +109,7 @@ ISR(ADC_vect){
 				
 				//Verificando taxa de bits
 				if(Tin!=0){
-					Fin = 0.5/Tin;
+					Fin = 1/(Tin*2);
 				} else {
 					Fin=0;
 				}
