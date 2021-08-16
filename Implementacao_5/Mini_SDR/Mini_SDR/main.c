@@ -13,7 +13,7 @@
 #include <xc.h>
 #include <math.h>
 
-float Ts = 0.00168;			//testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
+float Ts = 0.00042;			// 0.00168	testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
 float t = 0;
 int fp = 100;
 float pi = 3.14159;
@@ -138,6 +138,8 @@ int main(void)
 	lcd_default();
 	lcd_mod(1);
 	
+	PORTB &=  0b10111111; //Desliga LED BLUE
+	PORTB |=  0b10000000; //Liga LED RED
 	//PRE-RUN
 	while(!(PINC & (1<<PINC4))){
 	if(PINC & (1<<PINC2)){ //Botão M
@@ -255,6 +257,8 @@ int main(void)
 		
 		if(PINC & (1<<PINC2)){
 //		<<< pre-configuracao de modulacao aqui >>>
+			PORTB &=  0b10111111; //Desliga LED BLUE
+			PORTB |=  0b10000000; //Liga LED RED
 			ADMUX |= 0x01;
 			while (!(PINC & (1<<PINC3))) //Botão P
 			{
