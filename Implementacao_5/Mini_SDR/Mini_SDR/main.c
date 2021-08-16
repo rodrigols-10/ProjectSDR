@@ -126,7 +126,7 @@ int main(void)
 
 	DDRC = 0b00000000;
 	PORTC = 0b00000000;
-	//PORTB = 0b00000000;
+	PORTB = 0b00000000;
 	
 	cli();			//DESABILITA INTERRUPCAO GLOBAL -- Necessario ao iniciar, pois força o bit correspondente para zero.
 	adc_initiate();
@@ -138,7 +138,29 @@ int main(void)
 	lcd_default();
 	lcd_mod(1);
 	
-
+	//PRE-RUN
+	while(!(PINC & (1<<PINC4))){
+	if(PINC & (1<<PINC2)){ //Botão M
+		//		<<< pre-configuracao de modulacao aqui >>>
+		ADMUX |= 0x01;
+		while (!(PINC & (1<<PINC3))) //Botão P
+		{
+			modulacao();
+		}
+		//		<<< pre-configuracao de portadora aqui >>>
+		while (!(PINC & (1<<PINC4))) //Botão R
+		{
+			portadora();
+		}
+		lcd_mod(mod);
+		lcd_calc(Fin);
+		ADMUX &= 0xFE;	//Muda o canal do ADC para o canal 0
+	}
+	}
+	
+	// -----------------------------
+	//       RUN
+	// -----------------------------
     while(1)
     {
         // O valor de adc_value esta sendo coletado 
