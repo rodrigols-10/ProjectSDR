@@ -13,7 +13,7 @@
 #include <xc.h>
 #include <math.h>
 
-float Ts = 0.00168;			//testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
+float Ts = 0.00170;			//testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
 float t = 0;
 int fp = 100;
 float pi = 3.14159;
@@ -154,7 +154,7 @@ int main(void)
 		//       MODULAÇÃO FM
 		// -----------------------------
 		
-		if(mod == 2)	output =  Ap * cos(2*pi*t*(fp + input))+offset;
+		if(mod == 2)	output =  Ap * cos(2*pi*t*(fp + (input/2))) + offset;
 		
 		// -----------------------------
 		//       MODULAÇÃO ASK
@@ -188,10 +188,13 @@ int main(void)
 		t += Ts;
 		if(c >= 1) t = 0; //Quando a portadora completar 1 período, reiniciamos o t, para não haver contagem infinita.
 		
+		// -----------------------------
+		//       DISPLAY
+		// -----------------------------
 		if(mod<=2){ //mod=1 (AM) ou mod=2 (FM)
+		new_msg = input*(50/255);
 		lcd_R_analog(Fin);
-		//new_msg = input*(50/255);
-		//separate_digit(new_msg);
+
 		}
 		if(mod>=3){ //mod=3 (ASK) ou mod=4 (FSK)
 			lcd_R_digit(msg_bin,Fin);
@@ -199,7 +202,7 @@ int main(void)
 		
 		
 		// -----------------------------
-		//       BOTAO M
+		//       BOTOES E ESTADOS
 		// -----------------------------		
 		
 		if(PINC & (1<<PINC2)){
@@ -695,19 +698,19 @@ void lcd_calc(){
 
 void lcd_R_analog(int fin){
 	
-	separate_digit(adc_value*0.9);
+	separate_digit(new_msg);
 	
 	lcd_adress(0xC5);
-	lcd_number(ce);
+	lcd_number(de);
 	
 	lcd_adress(0xC6);
-	lcd_number(de);
+	lcd_number('.');
 	
 	lcd_adress(0xC7);
 	lcd_number(un);
 	
 	lcd_adress(0XC8);
-	lcd_data(0x01);					//null
+	lcd_data('v');					//null
 	
 	lcd_adress(0XC9);
 	lcd_data(0x01);					//null
