@@ -695,7 +695,7 @@ void lcd_calc(){
 
 void lcd_R_analog(int fin){
 	
-	separate_digit(fin);
+	separate_digit(adc_value*0.9);
 	
 	lcd_adress(0xC5);
 	lcd_number(ce);
@@ -734,6 +734,8 @@ void lcd_R_analog(int fin){
 	lcd_data('F');					//F
 	lcd_adress(0x8A);
 	lcd_data(0x3A);					//:
+	
+	separate_digit(fin);
 	
 	lcd_adress(0x8B);
 	lcd_number(ce);
