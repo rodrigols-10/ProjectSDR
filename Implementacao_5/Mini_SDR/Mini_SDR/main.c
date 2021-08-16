@@ -37,6 +37,9 @@ char VH = '0';
 int cont_bit=0;
 int contou=0;
 
+float Tb=0;
+int Fb=0;
+
 //LISTA DE FUNCOES
 void modulacao();
 void portadora();
@@ -58,12 +61,15 @@ void lcd_number(int n);
 void separate_digit(uint16_t n);
 void lcd_calc();
 void lcd_R_analog();
-void lcd_R_digit(char n[8]);
+void lcd_R_digit(char n[8], int fb);
 
 ISR(ADC_vect){
 	adc_value = ADC;
-	
+	//conta quantos Ts passaram pra um clock
 	if(mod>=3){ //Para modulações Digitais. mod=3 (ASK), mod=4 (FSK)
+		
+		Tb+=Ts; //Conta o periodo da taxa de bits para calcular a frequencia
+		
 		if(!(PINC & (1<<PINC5))){ // Se o clock da entrada estiver em LOW
 			if (adc_value <= 10)	  // Sinal de entrada com valor muito baixo (usar 0 em circuito real poderia não funcionar com ruído)
 			{
@@ -79,6 +85,14 @@ ISR(ADC_vect){
 				cont_bit++;
 				contou=0;
 				if(cont_bit==8)cont_bit=0;
+				
+				//Verificando taxa de bits
+				if(Tb!=0){
+					Fb = 1/Tb;
+				} else {
+					Fb=0;
+				}
+				Tb=0;
 			}
 		}
 	}
@@ -160,7 +174,7 @@ int main(void)
 		//separate_digit(new_msg);
 		}
 		if(mod>=3){ //mod=3 (ASK) ou mod=4 (FSK)
-			lcd_R_digit(msg_bin);
+			lcd_R_digit(msg_bin,Fb);
 		}
 		
 		
@@ -697,16 +711,8 @@ void lcd_R_analog(){
 	lcd_data(0x01);					//null
 }
 
-void lcd_R_digit(char n[8]){
-	/*char i0 = {0x4+n[0]};
-	char i1 = {0x4+n[1]};
-	char i2 = {0x4+n[2]};
-	char i3 = {0x4+n[3]};
-	char i4 = {0x4+n[4]};
-	char i5 = {0x4+n[5]};
-	char i6 = {0x4+n[6]};
-	char i7 = {0x4+n[7]};		
-	*/
+void lcd_R_digit(char n[8], int fb){
+	separate_digit(fb);
 	lcd_adress(0XC5);
 	lcd_data(n[0]);					//-
 	
@@ -739,6 +745,22 @@ void lcd_R_digit(char n[8]){
 	
 	lcd_adress(0XCF);
 	lcd_data(n[7]);					//-
+	
+	lcd_adress(0x89);
+	lcd_data(0x54);					//T
+	lcd_adress(0x8A);
+	lcd_data(0x3A);					//:
+	
+	lcd_adress(0x8B);
+	lcd_number(ce);
+	
+	lcd_adress(0x8C);
+	lcd_number(de);
+	
+	lcd_adress(0x8D);
+	lcd_number(un);
+	
+	
 	
 }
 
