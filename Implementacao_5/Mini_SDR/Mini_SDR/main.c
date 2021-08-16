@@ -695,7 +695,7 @@ void lcd_calc(){
 
 void lcd_R_analog(int fin){
 	
-	separate_digit(adc_value*0.9);
+	separate_digit(fin);
 	
 	lcd_adress(0xC5);
 	lcd_number(ce);
@@ -730,19 +730,19 @@ void lcd_R_analog(int fin){
 	lcd_adress(0XCF);
 	lcd_data(0x01);					//null
 	
-		lcd_adress(0x89);
-		lcd_data('F');					//F
-		lcd_adress(0x8A);
-		lcd_data(0x3A);					//:
-		
-		lcd_adress(0x8B);
-		lcd_number(ce);
-		
-		lcd_adress(0x8C);
-		lcd_number(de);
-		
-		lcd_adress(0x8D);
-		lcd_number(un);
+	lcd_adress(0x89);
+	lcd_data('F');					//F
+	lcd_adress(0x8A);
+	lcd_data(0x3A);					//:
+	
+	lcd_adress(0x8B);
+	lcd_number(ce);
+	
+	lcd_adress(0x8C);
+	lcd_number(de);
+	
+	lcd_adress(0x8D);
+	lcd_number(un);
 }
 
 void lcd_R_digit(char n[8], int fin){
