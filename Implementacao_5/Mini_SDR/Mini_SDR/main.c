@@ -60,9 +60,9 @@ void lcd_on_cursor();
 void lcd_port(uint16_t n);
 void lcd_number(int n);
 void separate_digit(uint16_t n);
-void lcd_calc();
-void lcd_R_analog();
-void lcd_R_digit(char n[8], int fb);
+void lcd_calc(int f);
+void lcd_R_analog(int f);
+void lcd_R_digit(char n[8], int f);
 
 ISR(ADC_vect){
 	adc_value = ADC;
@@ -163,8 +163,7 @@ int main(void)
 	}
 	if(!verifica_freq){							 //se verifica_freq = 0, não modula.
 		//lcd_mod(mod);
-		lcd_R_analog(Fin);
-		lcd_calc();
+		lcd_calc(Fin);
 		PORTB &=  0b10111111; //Desliga LED BLUE
 		PORTB |=  0b10000000; //Liga LED RED		
 	} else {									 //se verifica_freq = 1, modula.
@@ -220,8 +219,7 @@ int main(void)
 		//       DISPLAY
 		// -----------------------------
 		if(mod<=2){ //mod=1 (AM) ou mod=2 (FM)
-		lcd_R_analog(Fin);
-
+			lcd_R_analog(Fin);
 		}
 		if(mod>=3){ //mod=3 (ASK) ou mod=4 (FSK)
 			lcd_R_digit(msg_bin,Fin);
@@ -246,7 +244,7 @@ int main(void)
 				portadora();
 			}
 			lcd_mod(mod);
-			lcd_calc();
+			lcd_calc(Fin);
 			ADMUX &= 0xFE;	//Muda o canal do ADC para o canal 0
 		}
 		
@@ -704,7 +702,7 @@ void lcd_number(int n){
 	}
 }
 
-void lcd_calc(){
+void lcd_calc(int f){
 	lcd_adress(0XC5);
 	lcd_data(0x43);					//C
 	lcd_adress(0XC6);
@@ -727,9 +725,20 @@ void lcd_calc(){
 	lcd_data(0x4F);					//O
 	lcd_adress(0XCF);
 	lcd_data(0x01);					//null
+	
+		separate_digit(f);
+		
+		lcd_adress(0x8B);
+		lcd_number(ce);
+		
+		lcd_adress(0x8C);
+		lcd_number(de);
+		
+		lcd_adress(0x8D);
+		lcd_number(un);
 }
 
-void lcd_R_analog(int fin){
+void lcd_R_analog(int f){
 	
 	separate_digit(adc_value*0.9);
 	
@@ -771,7 +780,7 @@ void lcd_R_analog(int fin){
 	lcd_adress(0x8A);
 	lcd_data(0x3A);					//:
 	
-	separate_digit(fin);
+	separate_digit(f);
 	
 	lcd_adress(0x8B);
 	lcd_number(ce);
@@ -783,8 +792,8 @@ void lcd_R_analog(int fin){
 	lcd_number(un);
 }
 
-void lcd_R_digit(char n[8], int fin){
-	separate_digit(fin);
+void lcd_R_digit(char n[8], int f){
+	separate_digit(f);
 	lcd_adress(0XC5);
 	lcd_data(n[0]);					//-
 	
