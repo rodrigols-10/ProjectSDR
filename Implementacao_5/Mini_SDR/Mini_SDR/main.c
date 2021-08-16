@@ -66,9 +66,9 @@ ISR(ADC_vect){
 		if(!(PINC & (1<<PINC5))){ // Se o clock da entrada estiver em LOW
 			if (adc_value <= 10)	  // Sinal de entrada com valor muito baixo (usar 0 em circuito real poderia não funcionar com ruído)
 			{
-				VL = 0;
+				VL = '0';
 			} else{
-				VL = 1;
+				VL = '1';
 			}
 			contou=1;
 		} else {				// Se o clock da entrada estiver em HIGH
@@ -76,7 +76,8 @@ ISR(ADC_vect){
 			if(contou==1){
 				msg_bin[cont_bit] = VH;
 				cont_bit++;
-				contou=0;	
+				contou=0;
+				if(cont_bit==8)cont_bit=0;
 			}
 		}
 	}
