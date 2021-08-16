@@ -168,7 +168,7 @@ int main(void)
 		//PORTB &=  0b10111111; //Desliga LED BLUE
 		//PORTB |=  0b10000000; //Liga LED RED
 	} else {									 //se verifica_freq = 1, modula.
-		PORTB &=  0b01111111; //Desliga LED RED
+		//PORTB &=  0b01111111; //Desliga LED RED
 		PORTB |=  0b01000000; //Liga LED BLUE
 		
 		// -----------------------------
