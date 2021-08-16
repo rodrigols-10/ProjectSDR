@@ -37,8 +37,8 @@ char VH = '0';
 int cont_bit=0;
 int contou=0;
 
-float Tb=0;
-int Fb=0;
+float Tin=0;
+int Fin=0;
 
 //LISTA DE FUNCOES
 void modulacao();
@@ -66,9 +66,29 @@ void lcd_R_digit(char n[8], int fb);
 ISR(ADC_vect){
 	adc_value = ADC;
 	//conta quantos Ts passaram pra um clock
+	if(mod<=2){ //Para modulações Analogicas. mod=1 (AM), mod=2 (FM)
+		if (adc_value <= 511)
+		{
+			Tin += Ts;
+			contou = 1;
+		} else {
+			//Verificando frequencia de entrada
+			if (contou == 1)
+			{
+				if(Tin!=0){
+					Fin = 2/Tin;
+				} else {
+					Fin=0;
+				}
+				contou = 0;
+				Tin=0;
+			}
+			
+		}
+	}
 	if(mod>=3){ //Para modulações Digitais. mod=3 (ASK), mod=4 (FSK)
 		
-		Tb+=Ts; //Conta o periodo da taxa de bits para calcular a frequencia
+		Tin+=Ts; //Conta o periodo da taxa de bits para calcular a frequencia
 		
 		if(!(PINC & (1<<PINC5))){ // Se o clock da entrada estiver em LOW
 			if (adc_value <= 10)	  // Sinal de entrada com valor muito baixo (usar 0 em circuito real poderia não funcionar com ruído)
@@ -87,12 +107,12 @@ ISR(ADC_vect){
 				if(cont_bit==8)cont_bit=0;
 				
 				//Verificando taxa de bits
-				if(Tb!=0){
-					Fb = 1/Tb;
+				if(Tin!=0){
+					Fin = 1/Tin;
 				} else {
-					Fb=0;
+					Fin=0;
 				}
-				Tb=0;
+				Tin=0;
 			}
 		}
 	}
@@ -134,7 +154,7 @@ int main(void)
 		//       MODULAÇÃO FM
 		// -----------------------------
 		
-		if(mod == 2);
+		if(mod == 2)	output =  Ap * cos(2*pi*t*(fp + input))+offset;
 		
 		// -----------------------------
 		//       MODULAÇÃO ASK
@@ -169,12 +189,12 @@ int main(void)
 		if(c >= 1) t = 0; //Quando a portadora completar 1 período, reiniciamos o t, para não haver contagem infinita.
 		
 		if(mod<=2){ //mod=1 (AM) ou mod=2 (FM)
-		lcd_R_analog();
+		lcd_R_analog(Fin);
 		//new_msg = input*(50/255);
 		//separate_digit(new_msg);
 		}
 		if(mod>=3){ //mod=3 (ASK) ou mod=4 (FSK)
-			lcd_R_digit(msg_bin,Fb);
+			lcd_R_digit(msg_bin,Fin);
 		}
 		
 		
@@ -673,7 +693,7 @@ void lcd_calc(){
 	lcd_data(0x01);					//null
 }
 
-void lcd_R_analog(){
+void lcd_R_analog(int fin){
 	
 	separate_digit(adc_value*0.9);
 	
@@ -709,10 +729,24 @@ void lcd_R_analog(){
 	
 	lcd_adress(0XCF);
 	lcd_data(0x01);					//null
+	
+		lcd_adress(0x89);
+		lcd_data('F');					//F
+		lcd_adress(0x8A);
+		lcd_data(0x3A);					//:
+		
+		lcd_adress(0x8B);
+		lcd_number(ce);
+		
+		lcd_adress(0x8C);
+		lcd_number(de);
+		
+		lcd_adress(0x8D);
+		lcd_number(un);
 }
 
-void lcd_R_digit(char n[8], int fb){
-	separate_digit(fb);
+void lcd_R_digit(char n[8], int fin){
+	separate_digit(fin);
 	lcd_adress(0XC5);
 	lcd_data(n[0]);					//-
 	
