@@ -124,7 +124,7 @@ int main(void)
 	DDRD = 0b11111111;
 	DDRB = 0b11111111;
 
-	DDRC = 0b10000000;
+	DDRC = 0b00000000;
 	PORTC = 0b00000000;
 	//PORTB = 0b00000000;
 	
@@ -165,12 +165,12 @@ int main(void)
 		//lcd_mod(mod);
 		lcd_R_analog(Fin);
 		lcd_calc();
-		//PORTB &=  0b10111111; //Desliga LED BLUE
-		
-		PORTC &=  0b01111111; //Desliga LED BLUE
+		PORTB &=  0b10111111; //Desliga LED BLUE
+		PORTB |=  0b01000000; //Liga LED RED		
 	} else {									 //se verifica_freq = 1, modula.
-		PORTC |=  0b10000000; //Liga LED BLUE
-		//PORTB |=  0b01000000; //Liga LED BLUE
+		
+		PORTB &=  0b01111111; //Desliga LED RED
+		PORTB |=  0b01000000; //Liga LED BLUE
 		
 		// -----------------------------
 		//       MODULAÇÃO AM
@@ -330,6 +330,7 @@ void delay_1(){
 void lcd_cmd(unsigned char cmd){
 	
 	PORTB &= 0xF0;								// Mask preservation 4 LSBs
+	cmd &= 0x0F;
 	PORTB |= cmd;								// Add data command
 	
 	PORTB &= ~(1<<PORTB5);						// Set RS = 0
@@ -348,6 +349,7 @@ void lcd_data(unsigned char data){
 			
 			char MSB_data = data >> 4;			// Shift right 4 Bits MSB >> LSB
 			PORTB &= 0xF0;						// Mask preservation 4 MSBs
+			MSB_data &= 0x0F;
 			PORTB |= MSB_data;					// Add data
 			
 			PORTB |= (1<<PORTB4);				// Set E = 1
@@ -357,6 +359,7 @@ void lcd_data(unsigned char data){
 		
 		else{
 			PORTB &= 0xF0;						// Mask preservation 4 LSBs
+			data &= 0x0F;
 			PORTB |= data;						// Add data
 			
 			PORTB |= (1<<PORTB4);				// Set E = 1
@@ -376,6 +379,7 @@ void lcd_adress(unsigned char adress){
 			
 			char MSB_adress = adress >> 4;		// Shift right 4 Bits MSB >> LSB
 			PORTB &= 0xF0;						// Mask preservation 4 MSBs
+			MSB_adress &= 0x0F;
 			PORTB |= MSB_adress;				// Add data
 			
 			PORTB |= (1<<PORTB4);				// Set E = 1
@@ -385,6 +389,7 @@ void lcd_adress(unsigned char adress){
 		
 		else{
 			PORTB &= 0xF0;						// Mask preservation 4 LSBs
+			adress &= 0x0F;
 			PORTB |= adress;						// Add data
 			
 			PORTB |= (1<<PORTB4);				// Set E = 1
