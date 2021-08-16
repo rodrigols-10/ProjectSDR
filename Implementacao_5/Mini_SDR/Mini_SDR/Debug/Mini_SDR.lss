@@ -481,7 +481,7 @@ void delay_1(){
  c84:	96 01       	movw	r18, r12
  c86:	60 e0       	ldi	r22, 0x00	; 0
  c88:	70 e0       	ldi	r23, 0x00	; 0
- c8a:	80 e8       	ldi	r24, 0x80	; 128
+ c8a:	80 e0       	ldi	r24, 0x00	; 0
  c8c:	9f e3       	ldi	r25, 0x3F	; 63
  c8e:	0e 94 71 0c 	call	0x18e2	; 0x18e2 <__divsf3>
  c92:	0e 94 3a 0c 	call	0x1874	; 0x1874 <__fixsfsi>
