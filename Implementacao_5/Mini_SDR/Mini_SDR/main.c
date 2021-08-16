@@ -708,28 +708,28 @@ void lcd_R_digit(char n[8]){
 	char i7 = {0x4+n[7]};		
 	*/
 	lcd_adress(0XC5);
-	lcd_data(0x3+n[0]);					//-
+	lcd_data(n[0]);					//-
 	
 	lcd_adress(0XC6);
-	lcd_data(0x3+n[1]);					//-
+	lcd_data(n[1]);					//-
 	
 	lcd_adress(0XC7);
 	lcd_data(0x2E);					//.
 	
 	lcd_adress(0XC8);
-	lcd_data(0x3+n[2]);					//-
+	lcd_data(n[2]);					//-
 	
 	lcd_adress(0XC9);
-	lcd_data(0x3+n[3]);					//-
+	lcd_data(n[3]);					//-
 	
 	lcd_adress(0XCA);
 	lcd_data(0x2E);					//.
 	
 	lcd_adress(0XCB);
-	lcd_data(0x3+n[4]);					//-
+	lcd_data(n[4]);					//-
 	
 	lcd_adress(0XCC);
-	lcd_data(0x3+n[5]);					//-
+	lcd_data(n[5]);					//-
 	
 	lcd_adress(0XCD);
 	lcd_data(0x2E);					//.
