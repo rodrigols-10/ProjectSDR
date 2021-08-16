@@ -5,7 +5,7 @@
  *  Author: rodrigo & Marcelo & Joao Matheus Bernardo Resende & Wesley Brito & Anny Pinheiro
  */ 
 
-//#define F_CPU 16000000UL	//freq de trabalho da CPU
+#define F_CPU 16000000UL	//freq de trabalho da CPU
 
 //#include <util/delay.h>
 #include <avr/interrupt.h>
