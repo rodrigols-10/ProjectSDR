@@ -1667,7 +1667,7 @@ Disassembly of section .text.main:
  212:	8f 7b       	andi	r24, 0xBF	; 191
  214:	85 b9       	out	0x05, r24	; 5
  216:	85 b1       	in	r24, 0x05	; 5
- 218:	80 64       	ori	r24, 0x40	; 64
+ 218:	80 68       	ori	r24, 0x80	; 128
  21a:	85 b9       	out	0x05, r24	; 5
  21c:	ee c1       	rjmp	.+988    	; 0x5fa <__EEPROM_REGION_LENGTH__+0x1fa>
  21e:	85 b1       	in	r24, 0x05	; 5
