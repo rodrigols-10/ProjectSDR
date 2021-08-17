@@ -20,7 +20,7 @@
 
 float Ts = 0.00160;			// testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
 float t = 0;				// O tempo usado nos calculos de modulacao. Ira incrementar Ts a si mesmo varias vezes.
-float pi = 3.14159;
+float pi = 3.14159;	
 float c=0;					// Vai calcular "fp*t". quando essa multiplicacao resultar em 1, a portadora tera completado um ciclo. Usado para zerar t.
 uint8_t	input=0;			// Valor do sinal transformado em 8 bits
 uint8_t	output = 0;			// Sinal de saida que sera usado no conversor D/A
@@ -42,17 +42,18 @@ char VH = '0';				// Recebe o valor de VL quando o SCLK mudar para 1.
 int cont_bit=0;				// Este eh usado como o indice do vetor "msg_bin". Quando um bit for adicionado, este incrementa, permitindo adicionar o proximo bit na posicao seguinte.
 int contou=0;				// Usado para executar o calculo de Fin e incrementar cont_bit SOMENTE UMA VEZ, quando o sinal analógico ou o SCLK estiver em alto.
 
-float Tin=0;
-int Fin=0;
-int verifica_freq=0;
+float Tin=0;				// Periodo do sinal de entrada. Incrementa Ts em cada amostragem até completar o período (ou metade, no analógico).
+int Fin=0;					// Frequencia de entrada (tambem eh usado para a taxa de bits), calcula-se a partir de Tin.
+int verifica_freq=0;		// Eh usado nas condicoes dos limites da frequencia de entrada. Quando setado, permite a modulacao.
 
 //LISTA DE FUNCOES
-void modulacao();
-void portadora();
+void modulacao();			// Estado Modulação
+void portadora();			// Estado Portadora
 void adc_initiate();
 uint16_t freq_limit (uint16_t adc_value);
 void mod_select (uint16_t adc_value);
 
+//FUNCOES DO LCD
 void delay_1();
 void lcd_cmd(unsigned char cmd);
 void lcd_data(unsigned char data);
@@ -69,6 +70,7 @@ void lcd_calc(int f);
 void lcd_R_analog(int f);
 void lcd_R_digit(char n[8], int f);
 
+//INTERRUPCAO DO CONVERSOR A/D
 ISR(ADC_vect){
 	adc_value = ADC;
 
@@ -96,7 +98,7 @@ ISR(ADC_vect){
 		
 		Tin+=Ts; //Conta o periodo da taxa de bits para calcular a frequencia
 		
-		if(!(PINC & (1<<PINC5))){ // Se o clock da entrada estiver em LOW
+		if(!(PINC & (1<<PINC5))){ // Se o clock (SCLK) da entrada estiver em LOW
 			if (adc_value <= 10)	  // Sinal de entrada com valor muito baixo (usar 0 em circuito real poderia não funcionar com ruído)
 			{
 				VL = '0';
