@@ -2,7 +2,12 @@
  * main.c
  *
  * Created: 8/12/2021 7:54:20 PM
- *  Author: rodrigo & Marcelo & Joao Matheus Bernardo Resende & Wesley Brito & Anny Pinheiro
+ *  Authors: 
+ *		SANTANA, Rodrigo
+ *		MOTA, Marcelo
+ *		RESENDE, João Matheus
+ *		SILVA, Wesley
+ *		FERNANDES, Anny
  */ 
 
 #define F_CPU 16000000UL	//freq de trabalho da CPU
