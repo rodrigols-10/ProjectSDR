@@ -618,10 +618,10 @@ LOAD data_init
  .bss.un        0x0000000000800128        0x2 main.o
                 0x0000000000800128                un
 
-.bss.adc_value  0x000000000080012c        0x2
+.bss.adc_value  0x000000000080012e        0x2
  .bss.adc_value
-                0x000000000080012c        0x2 main.o
-                0x000000000080012c                adc_value
+                0x000000000080012e        0x2 main.o
+                0x000000000080012e                adc_value
 
 .bss.output     0x0000000000800134        0x1
  .bss.output    0x0000000000800134        0x1 main.o
@@ -968,13 +968,13 @@ LOAD data_init
  .data.Ts       0x0000000000800118        0x4 main.o
                 0x0000000000800118                Ts
 
-.data.mod       0x000000000080012a        0x2 load address 0x0000000000001918
- .data.mod      0x000000000080012a        0x2 main.o
-                0x000000000080012a                mod
+.data.fp        0x000000000080012a        0x2 load address 0x0000000000001918
+ .data.fp       0x000000000080012a        0x2 main.o
+                0x000000000080012a                fp
 
-.data.fp        0x000000000080012e        0x2 load address 0x000000000000191a
- .data.fp       0x000000000080012e        0x2 main.o
-                0x000000000080012e                fp
+.data.mod       0x000000000080012c        0x2 load address 0x000000000000191a
+ .data.mod      0x000000000080012c        0x2 main.o
+                0x000000000080012c                mod
 
 .data.VH        0x0000000000800130        0x1 load address 0x000000000000191c
  .data.VH       0x0000000000800130        0x1 main.o

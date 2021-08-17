@@ -89,25 +89,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  42 .bss.un       00000002  00800128  00800128  00001ab4  2**0
                   ALLOC
- 43 .data.mod     00000002  0080012a  00001918  00001aac  2**0
+ 43 .data.fp      00000002  0080012a  00001918  00001aac  2**0
                   CONTENTS, ALLOC, LOAD, DATA
- 44 .bss.adc_value 00000002  0080012c  0080012c  00001ab4  2**0
+ 44 .data.mod     00000002  0080012c  0000191a  00001aae  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+ 45 .bss.adc_value 00000002  0080012e  0080012e  00001ab4  2**0
                   ALLOC
- 45 .data.msg_bin 00000008  00800100  00001908  00001a9c  2**0
+ 46 .data.msg_bin 00000008  00800100  00001908  00001a9c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
- 46 .data.Ap      00000001  00800132  0000191e  00001ab2  2**0
+ 47 .data.Ap      00000001  00800132  0000191e  00001ab2  2**0
                   CONTENTS, ALLOC, LOAD, DATA
- 47 .data.offset  00000001  00800133  0000191f  00001ab3  2**0
+ 48 .data.offset  00000001  00800133  0000191f  00001ab3  2**0
                   CONTENTS, ALLOC, LOAD, DATA
- 48 .bss.output   00000001  00800134  00800134  00001ab4  2**0
+ 49 .bss.output   00000001  00800134  00800134  00001ab4  2**0
                   ALLOC
- 49 .bss.input    00000001  00800135  00800135  00001ab4  2**0
+ 50 .bss.input    00000001  00800135  00800135  00001ab4  2**0
                   ALLOC
- 50 .bss.c        00000004  0080010c  0080010c  00001ab4  2**0
+ 51 .bss.c        00000004  0080010c  0080010c  00001ab4  2**0
                   ALLOC
- 51 .data.pi      00000004  00800110  00001910  00001aa4  2**0
-                  CONTENTS, ALLOC, LOAD, DATA
- 52 .data.fp      00000002  0080012e  0000191a  00001aae  2**0
+ 52 .data.pi      00000004  00800110  00001910  00001aa4  2**0
                   CONTENTS, ALLOC, LOAD, DATA
  53 .bss.t        00000004  00800114  00800114  00001ab4  2**0
                   ALLOC
@@ -245,15 +245,15 @@ Disassembly of section .text:
   ba:	1c 01       	movw	r2, r24
   bc:	2a 80       	ldd	r2, Y+2	; 0x02
   be:	01 2a       	or	r0, r17
-  c0:	01 2c       	mov	r0, r1
+  c0:	01 2e       	mov	r0, r17
   c2:	00 19       	sub	r16, r0
   c4:	18 01       	movw	r2, r16
-  c6:	2c 01       	movw	r4, r24
-  c8:	2e 80       	ldd	r2, Y+6	; 0x06
-  ca:	01 2e       	mov	r0, r17
+  c6:	2e 01       	movw	r4, r28
+  c8:	30 80       	ld	r3, Z
+  ca:	01 30       	cpi	r16, 0x01	; 1
   cc:	01 34       	cpi	r16, 0x41	; 65
   ce:	00 19       	sub	r16, r0
-  d0:	1a 01       	movw	r2, r20
+  d0:	1c 01       	movw	r2, r24
   d2:	34 01       	movw	r6, r8
   d4:	36 80       	ldd	r3, Z+6	; 0x06
 
@@ -348,10 +348,10 @@ void delay_1(){
  aee:	ff 93       	push	r31
  af0:	00 91 78 00 	lds	r16, 0x0078	; 0x800078 <__TEXT_REGION_LENGTH__+0x7f8078>
  af4:	10 91 79 00 	lds	r17, 0x0079	; 0x800079 <__TEXT_REGION_LENGTH__+0x7f8079>
- af8:	10 93 2d 01 	sts	0x012D, r17	; 0x80012d <adc_value+0x1>
- afc:	00 93 2c 01 	sts	0x012C, r16	; 0x80012c <adc_value>
- b00:	c0 91 2a 01 	lds	r28, 0x012A	; 0x80012a <mod>
- b04:	d0 91 2b 01 	lds	r29, 0x012B	; 0x80012b <mod+0x1>
+ af8:	10 93 2f 01 	sts	0x012F, r17	; 0x80012f <adc_value+0x1>
+ afc:	00 93 2e 01 	sts	0x012E, r16	; 0x80012e <adc_value>
+ b00:	c0 91 2c 01 	lds	r28, 0x012C	; 0x80012c <mod>
+ b04:	d0 91 2d 01 	lds	r29, 0x012D	; 0x80012d <mod+0x1>
  b08:	c3 30       	cpi	r28, 0x03	; 3
  b0a:	d1 05       	cpc	r29, r1
  b0c:	0c f0       	brlt	.+2      	; 0xb10 <__vector_21+0x52>
@@ -1172,8 +1172,8 @@ Disassembly of section .text.mod_select:
     12c2:	48 f4       	brcc	.+18     	; 0x12d6 <mod_select+0x1a>
     12c4:	81 e0       	ldi	r24, 0x01	; 1
     12c6:	90 e0       	ldi	r25, 0x00	; 0
-    12c8:	90 93 2b 01 	sts	0x012B, r25	; 0x80012b <mod+0x1>
-    12cc:	80 93 2a 01 	sts	0x012A, r24	; 0x80012a <mod>
+    12c8:	90 93 2d 01 	sts	0x012D, r25	; 0x80012d <mod+0x1>
+    12cc:	80 93 2c 01 	sts	0x012C, r24	; 0x80012c <mod>
     12d0:	0e 94 50 03 	call	0x6a0	; 0x6a0 <lcd_mod>
     12d4:	08 95       	ret
     12d6:	9c 01       	movw	r18, r24
@@ -1183,8 +1183,8 @@ Disassembly of section .text.mod_select:
     12de:	48 f4       	brcc	.+18     	; 0x12f2 <mod_select+0x36>
     12e0:	82 e0       	ldi	r24, 0x02	; 2
     12e2:	90 e0       	ldi	r25, 0x00	; 0
-    12e4:	90 93 2b 01 	sts	0x012B, r25	; 0x80012b <mod+0x1>
-    12e8:	80 93 2a 01 	sts	0x012A, r24	; 0x80012a <mod>
+    12e4:	90 93 2d 01 	sts	0x012D, r25	; 0x80012d <mod+0x1>
+    12e8:	80 93 2c 01 	sts	0x012C, r24	; 0x80012c <mod>
     12ec:	0e 94 50 03 	call	0x6a0	; 0x6a0 <lcd_mod>
     12f0:	08 95       	ret
     12f2:	9c 01       	movw	r18, r24
@@ -1195,8 +1195,8 @@ Disassembly of section .text.mod_select:
     12fc:	48 f4       	brcc	.+18     	; 0x1310 <mod_select+0x54>
     12fe:	83 e0       	ldi	r24, 0x03	; 3
     1300:	90 e0       	ldi	r25, 0x00	; 0
-    1302:	90 93 2b 01 	sts	0x012B, r25	; 0x80012b <mod+0x1>
-    1306:	80 93 2a 01 	sts	0x012A, r24	; 0x80012a <mod>
+    1302:	90 93 2d 01 	sts	0x012D, r25	; 0x80012d <mod+0x1>
+    1306:	80 93 2c 01 	sts	0x012C, r24	; 0x80012c <mod>
     130a:	0e 94 50 03 	call	0x6a0	; 0x6a0 <lcd_mod>
     130e:	08 95       	ret
     1310:	8e 5f       	subi	r24, 0xFE	; 254
@@ -1206,8 +1206,8 @@ Disassembly of section .text.mod_select:
     1318:	40 f4       	brcc	.+16     	; 0x132a <mod_select+0x6e>
     131a:	84 e0       	ldi	r24, 0x04	; 4
     131c:	90 e0       	ldi	r25, 0x00	; 0
-    131e:	90 93 2b 01 	sts	0x012B, r25	; 0x80012b <mod+0x1>
-    1322:	80 93 2a 01 	sts	0x012A, r24	; 0x80012a <mod>
+    131e:	90 93 2d 01 	sts	0x012D, r25	; 0x80012d <mod+0x1>
+    1322:	80 93 2c 01 	sts	0x012C, r24	; 0x80012c <mod>
     1326:	0e 94 50 03 	call	0x6a0	; 0x6a0 <lcd_mod>
     132a:	08 95       	ret
 
@@ -1220,8 +1220,8 @@ Disassembly of section .text.modulacao:
 void modulacao()
 {
 	mod_select (adc_value);
-    1864:	80 91 2c 01 	lds	r24, 0x012C	; 0x80012c <adc_value>
-    1868:	90 91 2d 01 	lds	r25, 0x012D	; 0x80012d <adc_value+0x1>
+    1864:	80 91 2e 01 	lds	r24, 0x012E	; 0x80012e <adc_value>
+    1868:	90 91 2f 01 	lds	r25, 0x012F	; 0x80012f <adc_value+0x1>
     186c:	0e 94 5e 09 	call	0x12bc	; 0x12bc <mod_select>
     1870:	08 95       	ret
 
@@ -1352,11 +1352,11 @@ Disassembly of section .text.portadora:
 void portadora()
 {
 	fp = freq_limit (adc_value);
-    1816:	80 91 2c 01 	lds	r24, 0x012C	; 0x80012c <adc_value>
-    181a:	90 91 2d 01 	lds	r25, 0x012D	; 0x80012d <adc_value+0x1>
+    1816:	80 91 2e 01 	lds	r24, 0x012E	; 0x80012e <adc_value>
+    181a:	90 91 2f 01 	lds	r25, 0x012F	; 0x80012f <adc_value+0x1>
     181e:	0e 94 fe 0b 	call	0x17fc	; 0x17fc <freq_limit>
-    1822:	90 93 2f 01 	sts	0x012F, r25	; 0x80012f <fp+0x1>
-    1826:	80 93 2e 01 	sts	0x012E, r24	; 0x80012e <fp>
+    1822:	90 93 2b 01 	sts	0x012B, r25	; 0x80012b <fp+0x1>
+    1826:	80 93 2a 01 	sts	0x012A, r24	; 0x80012a <fp>
 	lcd_port(fp);
     182a:	0e 94 96 09 	call	0x132c	; 0x132c <lcd_port>
     182e:	08 95       	ret
@@ -1444,8 +1444,8 @@ Disassembly of section .text.lcd_R_analog:
  cf6:	cf 93       	push	r28
  cf8:	df 93       	push	r29
  cfa:	ec 01       	movw	r28, r24
- cfc:	60 91 2c 01 	lds	r22, 0x012C	; 0x80012c <adc_value>
- d00:	70 91 2d 01 	lds	r23, 0x012D	; 0x80012d <adc_value+0x1>
+ cfc:	60 91 2e 01 	lds	r22, 0x012E	; 0x80012e <adc_value>
+ d00:	70 91 2f 01 	lds	r23, 0x012F	; 0x80012f <adc_value+0x1>
  d04:	80 e0       	ldi	r24, 0x00	; 0
  d06:	90 e0       	ldi	r25, 0x00	; 0
  d08:	0e 94 21 09 	call	0x1242	; 0x1242 <__floatunsisf>
@@ -1652,8 +1652,8 @@ Disassembly of section .text.main:
  17a:	0e 94 0b 0c 	call	0x1816	; 0x1816 <portadora>
  17e:	34 9b       	sbis	0x06, 4	; 6
  180:	fc cf       	rjmp	.-8      	; 0x17a <main+0x50>
- 182:	80 91 2a 01 	lds	r24, 0x012A	; 0x80012a <mod>
- 186:	90 91 2b 01 	lds	r25, 0x012B	; 0x80012b <mod+0x1>
+ 182:	80 91 2c 01 	lds	r24, 0x012C	; 0x80012c <mod>
+ 186:	90 91 2d 01 	lds	r25, 0x012D	; 0x80012d <mod+0x1>
  18a:	0e 94 50 03 	call	0x6a0	; 0x6a0 <lcd_mod>
  18e:	80 91 1e 01 	lds	r24, 0x011E	; 0x80011e <Fin>
  192:	90 91 1f 01 	lds	r25, 0x011F	; 0x80011f <Fin+0x1>
@@ -1665,15 +1665,15 @@ Disassembly of section .text.main:
  1a2:	80 83       	st	Z, r24
  1a4:	34 9b       	sbis	0x06, 4	; 6
  1a6:	dc cf       	rjmp	.-72     	; 0x160 <main+0x36>
- 1a8:	80 91 2c 01 	lds	r24, 0x012C	; 0x80012c <adc_value>
- 1ac:	90 91 2d 01 	lds	r25, 0x012D	; 0x80012d <adc_value+0x1>
+ 1a8:	80 91 2e 01 	lds	r24, 0x012E	; 0x80012e <adc_value>
+ 1ac:	90 91 2f 01 	lds	r25, 0x012F	; 0x80012f <adc_value+0x1>
  1b0:	96 95       	lsr	r25
  1b2:	87 95       	ror	r24
  1b4:	96 95       	lsr	r25
  1b6:	87 95       	ror	r24
  1b8:	80 93 35 01 	sts	0x0135, r24	; 0x800135 <input>
- 1bc:	60 91 2e 01 	lds	r22, 0x012E	; 0x80012e <fp>
- 1c0:	70 91 2f 01 	lds	r23, 0x012F	; 0x80012f <fp+0x1>
+ 1bc:	60 91 2a 01 	lds	r22, 0x012A	; 0x80012a <fp>
+ 1c0:	70 91 2b 01 	lds	r23, 0x012B	; 0x80012b <fp+0x1>
  1c4:	07 2e       	mov	r0, r23
  1c6:	00 0c       	add	r0, r0
  1c8:	88 0b       	sbc	r24, r24
@@ -1688,8 +1688,8 @@ Disassembly of section .text.main:
  1e8:	70 93 0d 01 	sts	0x010D, r23	; 0x80010d <c+0x1>
  1ec:	80 93 0e 01 	sts	0x010E, r24	; 0x80010e <c+0x2>
  1f0:	90 93 0f 01 	sts	0x010F, r25	; 0x80010f <c+0x3>
- 1f4:	80 91 2a 01 	lds	r24, 0x012A	; 0x80012a <mod>
- 1f8:	90 91 2b 01 	lds	r25, 0x012B	; 0x80012b <mod+0x1>
+ 1f4:	80 91 2c 01 	lds	r24, 0x012C	; 0x80012c <mod>
+ 1f8:	90 91 2d 01 	lds	r25, 0x012D	; 0x80012d <mod+0x1>
  1fc:	03 97       	sbiw	r24, 0x03	; 3
  1fe:	9c f4       	brge	.+38     	; 0x226 <main+0xfc>
  200:	80 91 1e 01 	lds	r24, 0x011E	; 0x80011e <Fin>
@@ -1738,8 +1738,8 @@ Disassembly of section .text.main:
  278:	85 b1       	in	r24, 0x05	; 5
  27a:	80 64       	ori	r24, 0x40	; 64
  27c:	85 b9       	out	0x05, r24	; 5
- 27e:	c0 91 2a 01 	lds	r28, 0x012A	; 0x80012a <mod>
- 282:	d0 91 2b 01 	lds	r29, 0x012B	; 0x80012b <mod+0x1>
+ 27e:	c0 91 2c 01 	lds	r28, 0x012C	; 0x80012c <mod>
+ 282:	d0 91 2d 01 	lds	r29, 0x012D	; 0x80012d <mod+0x1>
  286:	c1 30       	cpi	r28, 0x01	; 1
  288:	d1 05       	cpc	r29, r1
  28a:	09 f0       	breq	.+2      	; 0x28e <main+0x164>
@@ -1757,8 +1757,8 @@ Disassembly of section .text.main:
  2ac:	0e 94 3a 0c 	call	0x1874	; 0x1874 <__addsf3>
  2b0:	4b 01       	movw	r8, r22
  2b2:	5c 01       	movw	r10, r24
- 2b4:	60 91 2e 01 	lds	r22, 0x012E	; 0x80012e <fp>
- 2b8:	70 91 2f 01 	lds	r23, 0x012F	; 0x80012f <fp+0x1>
+ 2b4:	60 91 2a 01 	lds	r22, 0x012A	; 0x80012a <fp>
+ 2b8:	70 91 2b 01 	lds	r23, 0x012B	; 0x80012b <fp+0x1>
  2bc:	07 2e       	mov	r0, r23
  2be:	00 0c       	add	r0, r0
  2c0:	88 0b       	sbc	r24, r24
@@ -1815,8 +1815,8 @@ Disassembly of section .text.main:
  358:	7c 01       	movw	r14, r24
  35a:	90 91 35 01 	lds	r25, 0x0135	; 0x800135 <input>
  35e:	96 95       	lsr	r25
- 360:	20 91 2e 01 	lds	r18, 0x012E	; 0x80012e <fp>
- 364:	30 91 2f 01 	lds	r19, 0x012F	; 0x80012f <fp+0x1>
+ 360:	20 91 2a 01 	lds	r18, 0x012A	; 0x80012a <fp>
+ 364:	30 91 2b 01 	lds	r19, 0x012B	; 0x80012b <fp+0x1>
  368:	92 9f       	mul	r25, r18
  36a:	a0 01       	movw	r20, r0
  36c:	93 9f       	mul	r25, r19
@@ -1883,8 +1883,8 @@ Disassembly of section .text.main:
  40c:	0e 94 3a 0c 	call	0x1874	; 0x1874 <__addsf3>
  410:	4b 01       	movw	r8, r22
  412:	5c 01       	movw	r10, r24
- 414:	60 91 2e 01 	lds	r22, 0x012E	; 0x80012e <fp>
- 418:	70 91 2f 01 	lds	r23, 0x012F	; 0x80012f <fp+0x1>
+ 414:	60 91 2a 01 	lds	r22, 0x012A	; 0x80012a <fp>
+ 418:	70 91 2b 01 	lds	r23, 0x012B	; 0x80012b <fp+0x1>
  41c:	07 2e       	mov	r0, r23
  41e:	00 0c       	add	r0, r0
  420:	88 0b       	sbc	r24, r24
@@ -1937,8 +1937,8 @@ Disassembly of section .text.main:
  4a6:	0e 94 3a 0c 	call	0x1874	; 0x1874 <__addsf3>
  4aa:	6b 01       	movw	r12, r22
  4ac:	7c 01       	movw	r14, r24
- 4ae:	60 91 2e 01 	lds	r22, 0x012E	; 0x80012e <fp>
- 4b2:	70 91 2f 01 	lds	r23, 0x012F	; 0x80012f <fp+0x1>
+ 4ae:	60 91 2a 01 	lds	r22, 0x012A	; 0x80012a <fp>
+ 4b2:	70 91 2b 01 	lds	r23, 0x012B	; 0x80012b <fp+0x1>
  4b6:	07 2e       	mov	r0, r23
  4b8:	00 0c       	add	r0, r0
  4ba:	88 0b       	sbc	r24, r24
@@ -1987,8 +1987,8 @@ Disassembly of section .text.main:
  538:	0e 94 7b 0c 	call	0x18f6	; 0x18f6 <__mulsf3>
  53c:	6b 01       	movw	r12, r22
  53e:	7c 01       	movw	r14, r24
- 540:	60 91 2e 01 	lds	r22, 0x012E	; 0x80012e <fp>
- 544:	70 91 2f 01 	lds	r23, 0x012F	; 0x80012f <fp+0x1>
+ 540:	60 91 2a 01 	lds	r22, 0x012A	; 0x80012a <fp>
+ 544:	70 91 2b 01 	lds	r23, 0x012B	; 0x80012b <fp+0x1>
  548:	07 2e       	mov	r0, r23
  54a:	00 0c       	add	r0, r0
  54c:	88 0b       	sbc	r24, r24
@@ -2055,15 +2055,15 @@ Disassembly of section .text.main:
  60e:	10 92 15 01 	sts	0x0115, r1	; 0x800115 <t+0x1>
  612:	10 92 16 01 	sts	0x0116, r1	; 0x800116 <t+0x2>
  616:	10 92 17 01 	sts	0x0117, r1	; 0x800117 <t+0x3>
- 61a:	80 91 2a 01 	lds	r24, 0x012A	; 0x80012a <mod>
- 61e:	90 91 2b 01 	lds	r25, 0x012B	; 0x80012b <mod+0x1>
+ 61a:	80 91 2c 01 	lds	r24, 0x012C	; 0x80012c <mod>
+ 61e:	90 91 2d 01 	lds	r25, 0x012D	; 0x80012d <mod+0x1>
  622:	03 97       	sbiw	r24, 0x03	; 3
  624:	34 f4       	brge	.+12     	; 0x632 <__EEPROM_REGION_LENGTH__+0x232>
  626:	80 91 1e 01 	lds	r24, 0x011E	; 0x80011e <Fin>
  62a:	90 91 1f 01 	lds	r25, 0x011F	; 0x80011f <Fin+0x1>
  62e:	0e 94 7b 06 	call	0xcf6	; 0xcf6 <lcd_R_analog>
- 632:	80 91 2a 01 	lds	r24, 0x012A	; 0x80012a <mod>
- 636:	90 91 2b 01 	lds	r25, 0x012B	; 0x80012b <mod+0x1>
+ 632:	80 91 2c 01 	lds	r24, 0x012C	; 0x80012c <mod>
+ 636:	90 91 2d 01 	lds	r25, 0x012D	; 0x80012d <mod+0x1>
  63a:	03 97       	sbiw	r24, 0x03	; 3
  63c:	44 f0       	brlt	.+16     	; 0x64e <__EEPROM_REGION_LENGTH__+0x24e>
  63e:	60 91 1e 01 	lds	r22, 0x011E	; 0x80011e <Fin>
@@ -2092,8 +2092,8 @@ Disassembly of section .text.main:
  674:	0e 94 0b 0c 	call	0x1816	; 0x1816 <portadora>
  678:	34 9b       	sbis	0x06, 4	; 6
  67a:	fc cf       	rjmp	.-8      	; 0x674 <__EEPROM_REGION_LENGTH__+0x274>
- 67c:	80 91 2a 01 	lds	r24, 0x012A	; 0x80012a <mod>
- 680:	90 91 2b 01 	lds	r25, 0x012B	; 0x80012b <mod+0x1>
+ 67c:	80 91 2c 01 	lds	r24, 0x012C	; 0x80012c <mod>
+ 680:	90 91 2d 01 	lds	r25, 0x012D	; 0x80012d <mod+0x1>
  684:	0e 94 50 03 	call	0x6a0	; 0x6a0 <lcd_mod>
  688:	80 91 1e 01 	lds	r24, 0x011E	; 0x80011e <Fin>
  68c:	90 91 1f 01 	lds	r25, 0x011F	; 0x80011f <Fin+0x1>

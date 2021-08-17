@@ -10,7 +10,7 @@
  *		FERNANDES, Anny
  */ 
 
-#define F_CPU 16000000UL	//freq de trabalho da CPU
+#define F_CPU 16000000UL	// freq de trabalho da CPU
 
 //#include <util/delay.h>
 #include <avr/interrupt.h>
@@ -18,29 +18,29 @@
 #include <xc.h>
 #include <math.h>
 
-float Ts = 0.00160;			//	testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
-float t = 0;
-int fp = 100;
+float Ts = 0.00160;			// testar Ts = 0.000216 ---> como cada amostra demora 13 clocks do ADC, testar isso. prescale = 0.000016
+float t = 0;				// O tempo usado nos calculos de modulacao. Ira incrementar Ts a si mesmo varias vezes.
 float pi = 3.14159;
-float c=0;
+float c=0;					// Vai calcular "fp*t". quando essa multiplicacao resultar em 1, a portadora tera completado um ciclo. Usado para zerar t.
 uint8_t	input=0;			// Valor do sinal transformado em 8 bits
-uint8_t	output = 0;			//Sinal de saida que sera usado no conversor D/A
-uint8_t offset = 127;		//Offset em 2.5V
-uint8_t Ap = 127;			//Amplitude da portadora em 2.5V
-uint8_t new_msg = 0;		//Mensagem analogica
-char msg_bin[8] = {'0','0','0','0','0','0','0','0'}; //Mensagem Binaria
+uint8_t	output = 0;			// Sinal de saida que sera usado no conversor D/A
+uint8_t offset = 127;		// Offset em 2.5V
+uint8_t Ap = 127;			// Amplitude da portadora em 2.5V
+uint8_t new_msg = 0;		// Mensagem analogica
+char msg_bin[8] = {'0','0','0','0','0','0','0','0'}; //Mensagem Binaria para o LCD
 
 //VARIAVEIS DE AJUSTES
 uint16_t adc_value = 0;
-int mod=1; //Inicia em AM
-int un = 0;
-int de = 0;
-int ce = 0;
+int mod=1;					// Responsavel por definir a modulacao. Inicia em AM (mod=1)
+int fp = 100;				// Responsavel por definir a frequencia da portadora. Inicia em 100Hz
+int un = 0;					// *
+int de = 0;					// * Utilizados para separar os numeros que serao mostrados no LCD
+int ce = 0;					// *
 
-char VL = '0';
-char VH = '0';
-int cont_bit=0;
-int contou=0;
+char VL = '0';				// Recebe o valor '0' ou '1', dependendo do sinal de entrada, enquanto SCLK = 0. Somente em ASK ou FSK.
+char VH = '0';				// Recebe o valor de VL quando o SCLK mudar para 1.
+int cont_bit=0;				// Este eh usado como o indice do vetor "msg_bin". Quando um bit for adicionado, este incrementa, permitindo adicionar o proximo bit na posicao seguinte.
+int contou=0;				// Usado para executar o calculo de Fin e incrementar cont_bit SOMENTE UMA VEZ, quando o sinal analógico ou o SCLK estiver em alto.
 
 float Tin=0;
 int Fin=0;
